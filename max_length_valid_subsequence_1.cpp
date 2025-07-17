@@ -27,3 +27,4 @@ public:
         return max({count_e, count_o, alternating});
     }
 };
+
