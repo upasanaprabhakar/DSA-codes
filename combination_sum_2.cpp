@@ -1,30 +1,32 @@
 class Solution {
-    public:
-        vector<vector<int> > result;
-        void f(vector<int>&cand,int t,int idx,vector<int>&subset){
-            if(t==0){
-                //found a subset
-                result.push_back(subset);
-                return;
-            }
-            if(idx==cand.size()) return;
-    
-            //pick
-            if(cand[idx]<=t){
-                subset.push_back(cand[idx]);
-                f(cand,t-cand[idx],idx+1,subset);
-                subset.pop_back();
-            }
-            //avoid
-            int j=idx+1;
-            while(j<cand.size() && cand[j]==cand[j-1])j++;
-            f(cand,t,j,subset);
+public:
+    void helper(vector<int>& candidates,int target ,vector<int>& curr, vector<vector<int>>& ans, int idx=0){
+        if(target == 0){
+            ans.push_back(curr);
+            return;
         }
-        vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
-            sort(candidates.begin(),candidates.end());
-            vector<int>subset;
-            result.clear();
-            f(candidates,target,0,subset);
-            return result;
+
+        for(int i=idx; i<candidates.size();i++){
+            //skip duplicates
+            if(i>idx && candidates[i] == candidates[i-1]){
+                continue;
+            }
+            //skip
+            if(candidates[i] > target){
+                break;
+            }
+            curr.push_back(candidates[i]);
+            //move to next index
+            helper(candidates, target-candidates[i], curr, ans , i+1);
+            
+            curr.pop_back();
         }
-    };
+    }
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<int> curr;
+        vector<vector<int>> ans;
+        helper(candidates, target, curr, ans, 0);
+        return ans;
+    }
+};
